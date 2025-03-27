@@ -45,7 +45,7 @@ function displayAnimalDetails(animal) {
             ${animal.image ? `<img src="${animal.image}" alt="${animal.name}">` : ''}
             <h3>Interesting Facts:</h3>
             <ul>${animal.facts.map(fact => `<li>${fact}</li>`).join('')}</ul>
-            <p>Type: ${animal.type.charAt(0).toUpperCase() + animal.type.slice(1)}</p>
+            <p>Type: ${animal.type ? (animal.type.charAt(0).toUpperCase() + animal.type.slice(1)) : 'Unknown'}</p>
             <p>Animal ID: ${animal.id}</p>
             <button onclick="loadEditForm(${animal.id})">Edit</button>
         </div>

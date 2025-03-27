@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # animal-explorer 1
 
 Description Animal Explorer is a web application that allows users to explore, search, and manage a collection of animals. Users can view animal details, filter by type, add new animals, and edit existing ones. The application fetches data from a JSON-based API hosted on Render.
@@ -32,3 +33,6 @@ Deployment
 
 The backend is hosted on Render at: <https://my-app-backend-ziqa.onrender.com/api/animals>
 Contribution Contributions are welcome! Feel free to fork the repository and submit a pull request.
+=======
+# animal-explorer1
+>>>>>>> 7c31688 (Updated README)
