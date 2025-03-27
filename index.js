@@ -103,7 +103,7 @@ animalForm.addEventListener('submit', async (event) => {
     }
 });
 
-/*function loadEditForm(animalId) {
+function loadEditForm(animalId) {
     const animal = animalsData.find(a => a.id == animalId);
     if (!animal) return;
     editId.value = animal.id;
@@ -140,4 +140,4 @@ editForm.addEventListener('submit', async (event) => {
         console.error('Error updating animal:', error);
     }
 });
-fetchAnimals();*/
+fetchAnimals();
