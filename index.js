@@ -14,11 +14,23 @@ const editType = document.getElementById('editType');
 const editId = document.getElementById('editId');
 
 let animalsData = [];
+
 async function fetchAnimals() {
     try {
         const response = await fetch('https://my-app-backend-ziqa.onrender.com/api/animals');
+        if (!response.ok) throw new Error('Failed to fetch animals');
+
         const data = await response.json();
-        animalsData = data;
+        console.log("Fetched data:", data); // Debugging log
+
+        animalsData = data.map(animal => ({
+            id: animal.id || "Unknown ID",
+            name: animal.name || "Unknown Name",
+            image: animal.image || "",
+            facts: Array.isArray(animal.facts) ? animal.facts : [],
+            type: animal.type || "Unknown"
+        }));
+
         renderAnimalList(animalsData);
     } catch (error) {
         console.error('Error fetching animal data:', error);
@@ -29,6 +41,8 @@ async function fetchAnimals() {
 function renderAnimalList(filteredAnimals) {
     animalList.innerHTML = '';
     filteredAnimals.forEach(animal => {
+        console.log("Animal in list:", animal); // Debugging log
+
         const li = document.createElement('li');
         li.textContent = animal.name;
         li.dataset.id = animal.id;
@@ -38,16 +52,24 @@ function renderAnimalList(filteredAnimals) {
 }
 
 function displayAnimalDetails(animal) {
-    factDisplay.innerHTML = '';
+    console.log("Displaying details for:", animal); // Debugging log
+
+    if (!animal) {
+        console.error("Error: Animal is undefined or null");
+        return;
+    }
+
+    const animalType = animal.type ? (animal.type.charAt(0).toUpperCase() + animal.type.slice(1)) : 'Unknown';
+    
     const detailsHTML = `
         <div>
-            <h2>${animal.name}</h2>
+            <h2>${animal.name || "Unknown Name"}</h2>
             ${animal.image ? `<img src="${animal.image}" alt="${animal.name}">` : ''}
             <h3>Interesting Facts:</h3>
-            <ul>${animal.facts.map(fact => `<li>${fact}</li>`).join('')}</ul>
-            <p>Type: ${animal.type ? (animal.type.charAt(0).toUpperCase() + animal.type.slice(1)) : 'Unknown'}</p>
-            <p>Animal ID: ${animal.id}</p>
-            <button onclick="loadEditForm(${animal.id})">Edit</button>
+            <ul>${animal.facts.length > 0 ? animal.facts.map(fact => `<li>${fact}</li>`).join('') : "<li>No facts available</li>"}</ul>
+            <p>Type: ${animalType}</p>
+            <p>Animal ID: ${animal.id || "Unknown ID"}</p>
+            <button onclick="loadEditForm('${animal.id}')">Edit</button>
         </div>
     `;
     factDisplay.innerHTML = detailsHTML;
@@ -78,22 +100,26 @@ animalForm.addEventListener('submit', async (event) => {
     event.preventDefault();
 
     const newId = animalsData.length > 0 ? Math.max(...animalsData.map(a => parseInt(a.id))) + 1 : 1;
-    
+
     const newAnimal = {
         id: newId.toString(),
-        name: animalInput.value,
-        image: imageInput.value,
-        facts: factsInput.value.split(',').map(fact => fact.trim()),
-        type: typeInput.value,
+        name: animalInput.value.trim(),
+        image: imageInput.value.trim(),
+        facts: factsInput.value.split(',').map(fact => fact.trim()).filter(fact => fact !== ""),
+        type: typeInput.value.trim() || "Unknown"
     };
-    
+
+    console.log("New animal data:", newAnimal); // Debugging log
+
     try {
         const response = await fetch('https://my-app-backend-ziqa.onrender.com/api/animals', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(newAnimal)
         });
+
         if (!response.ok) throw new Error('Failed to add animal');
+
         const addedAnimal = await response.json();
         animalsData.push(addedAnimal);
         renderAnimalList(animalsData);
@@ -104,8 +130,14 @@ animalForm.addEventListener('submit', async (event) => {
 });
 
 function loadEditForm(animalId) {
+    console.log("Loading edit form for animal ID:", animalId); // Debugging log
+
     const animal = animalsData.find(a => a.id == animalId);
-    if (!animal) return;
+    if (!animal) {
+        console.error("Error: Animal not found for editing");
+        return;
+    }
+
     editId.value = animal.id;
     editName.value = animal.name;
     editImage.value = animal.image;
@@ -116,22 +148,25 @@ function loadEditForm(animalId) {
 
 editForm.addEventListener('submit', async (event) => {
     event.preventDefault();
-    
+
     const updatedAnimal = {
-        name: editName.value,
-        image: editImage.value,
-        facts: editFacts.value.split(',').map(fact => fact.trim()),
-        type: editType.value
+        name: editName.value.trim(),
+        image: editImage.value.trim(),
+        facts: editFacts.value.split(',').map(fact => fact.trim()).filter(fact => fact !== ""),
+        type: editType.value.trim() || "Unknown"
     };
-    
+
+    console.log("Updating animal with ID:", editId.value, "Data:", updatedAnimal); // Debugging log
+
     try {
         const response = await fetch(`https://my-app-backend-ziqa.onrender.com/api/animals/${editId.value}`, {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(updatedAnimal)
         });
+
         if (!response.ok) throw new Error('Failed to update animal');
-        
+
         animalsData = animalsData.map(a => a.id == editId.value ? { ...a, ...updatedAnimal } : a);
         renderAnimalList(animalsData);
         factDisplay.innerHTML = '';
@@ -140,4 +175,6 @@ editForm.addEventListener('submit', async (event) => {
         console.error('Error updating animal:', error);
     }
 });
+
 fetchAnimals();
+
