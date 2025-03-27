@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animal Explorer</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Animal Explorer</h1>
+   
+    <form id="animalForm">
+        <input type="text" id="animalInput" placeholder="Animal Name" required>
+        <input type="text" id="imageInput" placeholder="Image URL">
+        <input type="text" id="factsInput" placeholder="Facts (comma-separated)" required>
+        <input type="text" id="typeInput" placeholder="Animal Type" required>
+        <button type="submit">Add Animal</button>
+    </form>
+
+   <!-- <form id="editForm" style="display: none;">
+    <input type="hidden" id="editId">
+    <label>Name: <input type="text" id="editName"></label>
+    <label>Image URL: <input type="text" id="editImage"></label>
+    <label>Facts: <input type="text" id="editFacts"></label>
+    <label>Type: <input type="text" id="editType"></label>
+    <button type="submit">Save Changes</button>
+</form>-->
+
+    
+    <h2>Animals</h2>
+    <ul id="animalList"></ul>
+    
+    <div id="factDisplay"></div>
+    
+    <script src="index.js"></script>
+</body>
+</html>
