@@ -14,14 +14,13 @@ const editType = document.getElementById('editType');
 const editId = document.getElementById('editId');
 
 let animalsData = [];
-
 async function fetchAnimals() {
     try {
         const response = await fetch('https://my-app-backend-ziqa.onrender.com/api/animals');
         if (!response.ok) throw new Error('Failed to fetch animals');
 
         const data = await response.json();
-        console.log("Fetched data:", data); // Debugging log
+        console.log("Fetched data:", data);
 
         animalsData = data.map(animal => ({
             id: animal.id || "Unknown ID",
@@ -41,7 +40,7 @@ async function fetchAnimals() {
 function renderAnimalList(filteredAnimals) {
     animalList.innerHTML = '';
     filteredAnimals.forEach(animal => {
-        console.log("Animal in list:", animal); // Debugging log
+        console.log("Animal in list:", animal);
 
         const li = document.createElement('li');
         li.textContent = animal.name;
@@ -52,7 +51,7 @@ function renderAnimalList(filteredAnimals) {
 }
 
 function displayAnimalDetails(animal) {
-    console.log("Displaying details for:", animal); // Debugging log
+    console.log("Displaying details for:", animal);
 
     if (!animal) {
         console.error("Error: Animal is undefined or null");
@@ -77,7 +76,7 @@ function displayAnimalDetails(animal) {
 
 animalInput.addEventListener('input', () => {
     const searchTerm = animalInput.value.toLowerCase();
-    const filteredAnimals = animalsData.filter(animal => 
+    const filteredAnimals = animalsData.filter(animal =>
         animal.name.toLowerCase().includes(searchTerm)
     );
     renderAnimalList(filteredAnimals);
@@ -109,7 +108,7 @@ animalForm.addEventListener('submit', async (event) => {
         type: typeInput.value.trim() || "Unknown"
     };
 
-    console.log("New animal data:", newAnimal); // Debugging log
+    console.log("New animal data:", newAnimal);
 
     try {
         const response = await fetch('https://my-app-backend-ziqa.onrender.com/api/animals', {
@@ -130,7 +129,7 @@ animalForm.addEventListener('submit', async (event) => {
 });
 
 function loadEditForm(animalId) {
-    console.log("Loading edit form for animal ID:", animalId); // Debugging log
+    console.log("Loading edit form for animal ID:", animalId);
 
     const animal = animalsData.find(a => a.id == animalId);
     if (!animal) {
@@ -156,7 +155,7 @@ editForm.addEventListener('submit', async (event) => {
         type: editType.value.trim() || "Unknown"
     };
 
-    console.log("Updating animal with ID:", editId.value, "Data:", updatedAnimal); // Debugging log
+    console.log("Updating animal with ID:", editId.value, "Data:", updatedAnimal);
 
     try {
         const response = await fetch(`https://my-app-backend-ziqa.onrender.com/api/animals/${editId.value}`, {
@@ -175,6 +174,4 @@ editForm.addEventListener('submit', async (event) => {
         console.error('Error updating animal:', error);
     }
 });
-
 fetchAnimals();
-
